@@ -23,7 +23,7 @@ export default function App(props: AppProps) {
 				theme={{
 					/** Put your mantine theme override here */
 					colorScheme: "dark",
-					fontFamily: "Comfortaa",
+					// fontFamily: "'Permanent Marker', cursive",
 					colors: {
 						// override dark colors to change them for all components
 						dark: [

@@ -18,6 +18,7 @@ import {
 	Title,
 	Anchor,
 	createStyles,
+	HoverCard,
 } from "@mantine/core";
 import { useListState, useId, useClipboard } from "@mantine/hooks";
 import React, { useEffect, useRef, useState } from "react";
@@ -67,6 +68,7 @@ const useStyles = createStyles((theme) => ({
 			color: "inherit",
 			// cursor: "auto",
 		},
+		fontFamily: theme.fontFamily,
 	},
 	textPrompt: {
 		fontFamily: theme.fontFamily,
@@ -75,6 +77,8 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: "#0C4160",
 	},
 }));
+
+const maxCodeCards = 15;
 
 export default function CodehopLayout(props: CodehopLayoutProps) {
 	const [codeCardProps, codeCardPropsHandlers] = useListState<CodeCardProps>(
@@ -114,6 +118,15 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	}
 
 	function addCodeCard(url: string) {
+		if (codeCardProps.length >= maxCodeCards) {
+			showNotification({
+				color: "red",
+				message: `Cannot have more than ${maxCodeCards} cards in a single collection`,
+			});
+
+			return;
+		}
+
 		const cardID = v4();
 		console.log("url", url, "cardID", cardID);
 		// const url =
@@ -240,58 +253,48 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 				// 	</Footer>
 				// }
 				header={
-					<Header height={70} p="md">
-						<div
-						// style={{ display: "flex", alignItems: "center", height: "100%" }}
-						>
-							{/* <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-								<Burger
-									opened={opened}
-									onClick={() => setOpened((o) => !o)}
-									size="sm"
-									color={theme.colors.gray[6]}
-									mr="xl"
-								/>
-							</MediaQuery> */}
-
-							<Anchor href="/" className={classes.titleAnchor}>
-								<Title style={{ fontFamily: theme.fontFamily }}>Codehop</Title>
-							</Anchor>
-						</div>
+					<Header height={70} p="sm">
+						<Anchor href="/" className={classes.titleAnchor}>
+							<Title style={{ fontFamily: "Permanent Marker" }}>CODEHOP</Title>
+						</Anchor>
 					</Header>
 				}
 			>
-				<Stack>
+				<Stack
+					// align="stretch"
+					style={{ height: "100%" }}
+					// style={{ height: "100%", border: "1px solid green" }}
+					justify={codeCardProps.length === 0 ? "center" : "flex-start"}
+				>
 					<Container>
 						{!props.isSavedCollection && (
-							<Center>
-								<form
-									onSubmit={urlInput.onSubmit((values) => {
-										addCodeCard(values.url);
-										urlInput.setValues({ url: "" });
-									})}
-								>
-									<Group>
-										<TextInput
-											placeholder="Link to file and line number"
-											{...urlInput.getInputProps("url")}
-										/>
+							<form
+								onSubmit={urlInput.onSubmit((values) => {
+									addCodeCard(values.url);
+									urlInput.setValues({ url: "" });
+								})}
+							>
+								<Group noWrap={true}>
+									<TextInput
+										placeholder="Link to file and line number"
+										{...urlInput.getInputProps("url")}
+										style={{ width: 300 }}
+									/>
 
-										<Button className={classes.chButton} type="submit">
-											Add
+									<Button className={classes.chButton} type="submit">
+										Add
+									</Button>
+									{codeCardProps.length != 0 && (
+										<Button
+											className={classes.chButton}
+											onClick={saveCollection}
+											loading={savingCollection}
+										>
+											Share
 										</Button>
-										{codeCardProps.length != 0 && (
-											<Button
-												className={classes.chButton}
-												onClick={saveCollection}
-												loading={savingCollection}
-											>
-												Share
-											</Button>
-										)}
-									</Group>
-								</form>
-							</Center>
+									)}
+								</Group>
+							</form>
 						)}
 
 						{/* <Group>
@@ -301,19 +304,30 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							<Button onClick={addAll}>Add All</Button>
 						</Group> */}
 					</Container>
-					{codeCardProps.length == 0 ? (
-						<Center>
-							<Title className={classes.textPrompt}>
-								{" "}
-								Get started by submitting links{" "}
-							</Title>
-						</Center>
-					) : (
-						<CodeCardCollection
-							codeCardProps={codeCardProps}
-							collectionID={props.collectionID}
-						/>
-					)}
+					<Container style={{ width: "100%" }} fluid={true}>
+						{codeCardProps.length == 0 ? (
+							<Center>
+								<Title className={classes.textPrompt}>
+									Start by adding GitHub links to files
+								</Title>
+								<HoverCard width={280} shadow="md">
+									<HoverCard.Target>
+										<Title>*</Title>
+									</HoverCard.Target>
+									<HoverCard.Dropdown>
+										<Text size="sm">
+											Currently only public repositories are supported
+										</Text>
+									</HoverCard.Dropdown>
+								</HoverCard>
+							</Center>
+						) : (
+							<CodeCardCollection
+								codeCardProps={codeCardProps}
+								collectionID={props.collectionID}
+							/>
+						)}
+					</Container>
 				</Stack>
 			</AppShell>
 		</div>

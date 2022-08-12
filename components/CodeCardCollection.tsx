@@ -8,6 +8,7 @@ import {
 	Group,
 	Container,
 	Stack,
+	ScrollArea,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import CodeCard, { CodeCardProps } from "./CodeCard";
@@ -21,19 +22,25 @@ export interface CodeCardCollectionProps {
 
 export default function CodeCardCollection(props: CodeCardCollectionProps) {
 	return (
-		<Group>
-			{props.codeCardProps.map((codeCardProp) => (
-				<CodeCard
-					key={codeCardProp.id}
-					id={codeCardProp.id}
-					url={codeCardProp.url}
-					lineNumber={codeCardProp.lineNumber}
-					language={codeCardProp.language}
-					providedURL={codeCardProp.providedURL}
-					onRemove={codeCardProp.onRemove}
-					isSavedCollection={codeCardProp.isSavedCollection}
-				/>
-			))}
-		</Group>
+		<ScrollArea
+			// style={{ width: "100%", border: "1px solid blue" }}
+			dir="ltr"
+			offsetScrollbars={true}
+		>
+			<Group noWrap={true}>
+				{props.codeCardProps.map((codeCardProp) => (
+					<CodeCard
+						key={codeCardProp.id}
+						id={codeCardProp.id}
+						url={codeCardProp.url}
+						lineNumber={codeCardProp.lineNumber}
+						language={codeCardProp.language}
+						providedURL={codeCardProp.providedURL}
+						onRemove={codeCardProp.onRemove}
+						isSavedCollection={codeCardProp.isSavedCollection}
+					/>
+				))}
+			</Group>
+		</ScrollArea>
 	);
 }

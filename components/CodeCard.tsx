@@ -10,6 +10,7 @@ import {
 	Stack,
 	createStyles,
 	Anchor,
+	Code,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -41,6 +42,9 @@ const useStyle = createStyles(() => ({
 			color: "inherit",
 			// cursor: "auto",
 		},
+	},
+	cardRemove: {
+		height: "70vh",
 	},
 	card: {
 		height: "70vh",
@@ -106,7 +110,7 @@ export default function CodeCard(props: CodeCardProps) {
 	};
 
 	const scrollToLineNumber = async (data: any) => {
-		await new Promise((r) => setTimeout(r, 500));
+		await new Promise((r) => setTimeout(r, 100));
 
 		const scrollAreaViewport = prismViewport.current
 			.getElementsByClassName("mantine-ScrollArea-root")[0]
@@ -151,15 +155,25 @@ export default function CodeCard(props: CodeCardProps) {
 	return (
 		<Container size="sm" px="m">
 			<Stack>
-				<Anchor
-					target="_blank"
-					href={props.providedURL}
-					className={classes.cardLink}
-				>
-					<Text component="a" size="sm">
-						{props.providedURL.replace("https://github.com/", "")}
-					</Text>
-				</Anchor>
+				<Group position="apart">
+					<Anchor
+						target="_blank"
+						href={props.providedURL}
+						className={classes.cardLink}
+					>
+						<Code>{props.providedURL.replace("https://github.com/", "")}</Code>
+					</Anchor>
+					{!props.isSavedCollection && (
+						<Button
+							size="xs"
+							color={"red"}
+							onClick={() => props.onRemove(props.id)}
+						>
+							Remove
+						</Button>
+					)}
+				</Group>
+
 				<Card
 					shadow="sm"
 					p="lg"
@@ -185,15 +199,6 @@ export default function CodeCard(props: CodeCardProps) {
 						</Prism>
 					)}
 				</Card>
-				{!props.isSavedCollection && (
-					<Button
-						size="sm"
-						color={"red"}
-						onClick={() => props.onRemove(props.id)}
-					>
-						Remove
-					</Button>
-				)}
 			</Stack>
 		</Container>
 	);
