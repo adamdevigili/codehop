@@ -24,9 +24,23 @@ export interface CodeCardProps {
 	lineNumber: number;
 	language: string;
 	onRemove: (key: string) => void;
+	isSavedCollection: boolean;
 }
 
 const useStyle = createStyles(() => ({
+	cardLink: {
+		"&:link": {
+			textDecoration: "inherit",
+			color: "inherit",
+			// cursor: "auto",
+		},
+
+		"&:hover": {
+			textDecoration: "inherit",
+			color: "inherit",
+			// cursor: "auto",
+		},
+	},
 	card: {
 		height: "70vh",
 	},
@@ -136,8 +150,12 @@ export default function CodeCard(props: CodeCardProps) {
 	return (
 		<Container size="sm" px="m">
 			<Stack>
-				<Anchor target="_blank" href={props.providedURL}>
-					<Text component="a" size="lg">
+				<Anchor
+					target="_blank"
+					href={props.providedURL}
+					className={classes.cardLink}
+				>
+					<Text component="a" size="sm">
 						{props.providedURL.replace("https://github.com/", "")}
 					</Text>
 				</Anchor>
@@ -166,7 +184,15 @@ export default function CodeCard(props: CodeCardProps) {
 						</Prism>
 					)}
 				</Card>
-				<Button onClick={() => props.onRemove(props.id)}>remove me</Button>
+				{!props.isSavedCollection && (
+					<Button
+						size="sm"
+						color={"red"}
+						onClick={() => props.onRemove(props.id)}
+					>
+						Remove
+					</Button>
+				)}
 			</Stack>
 		</Container>
 	);

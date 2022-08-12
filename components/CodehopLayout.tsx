@@ -16,8 +16,10 @@ import {
 	useMantineTheme,
 	Center,
 	Title,
+	Anchor,
+	createStyles,
 } from "@mantine/core";
-import { useListState, useId } from "@mantine/hooks";
+import { useListState, useId, useClipboard } from "@mantine/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import CodeCard, { CodeCardProps } from "./CodeCard";
 import CodeCardCollection, {
@@ -27,11 +29,36 @@ import { useForm } from "@mantine/form";
 import { randomUUID } from "crypto";
 import { v4 } from "uuid";
 import { NextApiRequest } from "next";
+import { showNotification } from "@mantine/notifications";
+import { useRouter } from "next/router";
 
 export interface CodehopLayoutProps {
 	codeCardProps: CodeCardProps[];
 	collectionID: string;
+	isSavedCollection: boolean;
 }
+
+const useStyles = createStyles((theme) => ({
+	titleAnchor: {
+		"&:link": {
+			textDecoration: "inherit",
+			color: "inherit",
+			// cursor: "auto",
+		},
+
+		"&:hover": {
+			textDecoration: "inherit",
+			color: "inherit",
+			// cursor: "auto",
+		},
+	},
+	textPrompt: {
+		fontFamily: theme.fontFamily,
+	},
+	chButton: {
+		backgroundColor: "#0C4160",
+	},
+}));
 
 export default function CodehopLayout(props: CodehopLayoutProps) {
 	const [codeCardProps, codeCardPropsHandlers] = useListState<CodeCardProps>(
@@ -45,6 +72,10 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	const theme = useMantineTheme();
 	const [opened, setOpened] = useState(false);
 	const [savedCollectionID, setSavedCollectionID] = useState(null);
+	const [savingCollection, setSavingCollection] = useState(false);
+	const { classes, cx } = useStyles();
+	const clipboard = useClipboard({ timeout: 500 });
+	const router = useRouter();
 
 	// useEffect(() => {
 	// 	changeChartData(totalMonth);
@@ -88,12 +119,14 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			language: "go",
 			providedURL: url,
 			onRemove: removeCodeCard,
+			isSavedCollection: props.isSavedCollection,
 		});
 
 		console.log(codeCardProps);
 	}
 
 	async function saveCollection() {
+		setSavingCollection(true);
 		const r: CodeCardCollectionProps = {
 			codeCardProps: codeCardProps,
 			collectionID: props.collectionID,
@@ -105,7 +138,17 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 		const resp = await req.json();
 
-		console.log(resp);
+		clipboard.copy(resp.id);
+		setSavingCollection(false);
+
+		showNotification({
+			// title: 'Default notification',
+			message: "Collection ID saved to clipboard",
+		});
+
+		router.push("/" + resp.id);
+
+		console.log(resp.id);
 
 		// return setData(newData.results);
 	}
@@ -191,48 +234,66 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 								/>
 							</MediaQuery> */}
 
-							<Center>
-								<Title>CODEHOP {props.collectionID}</Title>
-							</Center>
+							<Anchor href="/" className={classes.titleAnchor}>
+								<Title style={{ fontFamily: theme.fontFamily }}>Codehop</Title>
+							</Anchor>
 						</div>
 					</Header>
 				}
 			>
 				<Stack>
-					<CodeCardCollection
-						codeCardProps={codeCardProps}
-						collectionID={props.collectionID}
-					/>
 					<Container>
-						<form
-							onSubmit={urlInput.onSubmit((values) => {
-								addCodeCard(values.url);
-								urlInput.setValues({ url: "" });
-							})}
-						>
-							<Group>
-								<TextInput
-									placeholder="Link to file and line number"
-									{...urlInput.getInputProps("url")}
-								/>
+						{!props.isSavedCollection && (
+							<Center>
+								<form
+									onSubmit={urlInput.onSubmit((values) => {
+										addCodeCard(values.url);
+										urlInput.setValues({ url: "" });
+									})}
+								>
+									<Group>
+										<TextInput
+											placeholder="Link to file and line number"
+											{...urlInput.getInputProps("url")}
+										/>
 
-								<Button type="submit">Submit</Button>
-							</Group>
-						</form>
+										<Button className={classes.chButton} type="submit">
+											Add
+										</Button>
+										{codeCardProps.length != 0 && (
+											<Button
+												className={classes.chButton}
+												onClick={saveCollection}
+												loading={savingCollection}
+											>
+												Share
+											</Button>
+										)}
+									</Group>
+								</form>
+							</Center>
+						)}
 
-						<Group>
+						{/* <Group>
 							<Button onClick={addTestURL1}>Add Test URL 1</Button>
 							<Button onClick={addTestURL2}>Add Test URL 2</Button>
 							<Button onClick={addTestURL3}>Add Test URL 3</Button>
 							<Button onClick={addAll}>Add All</Button>
-						</Group>
-
-						<Center>
-							<Button onClick={saveCollection}>Get Link</Button>
-						</Center>
-
-						{/* <Button onClick={removeURL}>Remove</Button> */}
+						</Group> */}
 					</Container>
+					{codeCardProps.length == 0 ? (
+						<Center>
+							<Title className={classes.textPrompt}>
+								{" "}
+								Get started by submitting links{" "}
+							</Title>
+						</Center>
+					) : (
+						<CodeCardCollection
+							codeCardProps={codeCardProps}
+							collectionID={props.collectionID}
+						/>
+					)}
 				</Stack>
 			</AppShell>
 		</div>

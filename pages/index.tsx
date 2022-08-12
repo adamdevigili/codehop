@@ -30,5 +30,11 @@ import { NextApiRequest } from "next";
 import CodehopLayout from "../components/CodehopLayout";
 
 export default function Home() {
-	return <CodehopLayout codeCardProps={[]} collectionID="" />;
+	return (
+		<CodehopLayout
+			codeCardProps={[]}
+			collectionID=""
+			isSavedCollection={false}
+		/>
+	);
 }

@@ -2,6 +2,7 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 
 export default function App(props: AppProps) {
 	const { Component, pageProps } = props;
@@ -22,9 +23,27 @@ export default function App(props: AppProps) {
 				theme={{
 					/** Put your mantine theme override here */
 					colorScheme: "dark",
+					fontFamily: "Comfortaa",
+					colors: {
+						// override dark colors to change them for all components
+						dark: [
+							"#d5d7e0", // title text
+							"#acaebf",
+							"#8c8fa3",
+							"#666980", // input text
+							"#4d4f66", // input border
+							"#34354a",
+							"#2b2c3d", // input background
+							"#0C4160", // header
+							"#071330", // main
+							"#01010a",
+						],
+					},
 				}}
 			>
-				<Component {...pageProps} />
+				<NotificationsProvider position="top-right">
+					<Component {...pageProps} />
+				</NotificationsProvider>
 			</MantineProvider>
 		</>
 	);

@@ -19,6 +19,11 @@ export default async function collection(
 		// };
 		console.log(collection);
 
+		const parsed = JSON.parse(collection);
+		parsed.codeCardProps.forEach((element) => {
+			element.isSavedCollection = true;
+		});
+		console.log(parsed);
 		const { db } = await connectToDatabase();
 
 		// const movies = await db
@@ -28,9 +33,7 @@ export default async function collection(
 		// 	.limit(20)
 		// 	.toArray();
 
-		const result = await db
-			.collection("savedCollections")
-			.insertOne(JSON.parse(collection));
+		const result = await db.collection("savedCollections").insertOne(parsed);
 		console.log(`A document was inserted with the _id: ${result.insertedId}`);
 
 		const resp: SaveCollectionResponse = {

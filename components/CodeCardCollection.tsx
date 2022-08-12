@@ -31,6 +31,7 @@ export default function CodeCardCollection(props: CodeCardCollectionProps) {
 					language={codeCardProp.language}
 					providedURL={codeCardProp.providedURL}
 					onRemove={codeCardProp.onRemove}
+					isSavedCollection={codeCardProp.isSavedCollection}
 				/>
 			))}
 		</Group>
