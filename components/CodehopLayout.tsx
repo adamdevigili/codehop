@@ -78,6 +78,11 @@ const useStyles = createStyles((theme) => ({
 	chButton: {
 		backgroundColor: "#0C4160",
 	},
+	footer: {
+		backgroundColor: "transparent",
+		color: "#626378",
+		borderTop: "unset",
+	},
 }));
 
 const maxCodeCards = 15;
@@ -282,6 +287,19 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							<LoginButton />
 						</Group>
 					</Header>
+				}
+				footer={
+					<Footer className={classes.footer} height={50} p="sm">
+						<Center>
+							<Anchor
+								href="https://github.com/adamdevigili"
+								className={classes.titleAnchor}
+								target="_blank"
+							>
+								<Text size="md">created by @adamdevigili</Text>
+							</Anchor>
+						</Center>
+					</Footer>
 				}
 			>
 				<Stack

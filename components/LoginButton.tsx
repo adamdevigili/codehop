@@ -17,7 +17,9 @@ export default function LoginButton() {
 			<>
 				{/* Signed in as {session.user.email} <br /> */}
 				{/* <Button onClick={() => getToken()}>Get token</Button> */}
-				<Button onClick={() => signOut()}>Sign out</Button>
+				<Button className={classes.chButton} onClick={() => signOut()}>
+					Sign out
+				</Button>
 				{/* Session: {JSON.stringify(session)} <br /> */}
 			</>
 		);
