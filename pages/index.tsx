@@ -20,10 +20,13 @@ import {
 import { useListState, useId } from "@mantine/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import CodeCard, { CodeCardProps } from "../components/CodeCard";
-import CodeCardCollection from "../components/CodeCardCollection";
+import CodeCardCollection, {
+	CodeCardCollectionProps,
+} from "../components/CodeCardCollection";
 import { useForm } from "@mantine/form";
 import { randomUUID } from "crypto";
 import { v4 } from "uuid";
+import { NextApiRequest } from "next";
 
 export default function Home() {
 	const [codeCardProps, codeCardPropsHandlers] = useListState<CodeCardProps>(
@@ -32,6 +35,7 @@ export default function Home() {
 
 	const theme = useMantineTheme();
 	const [opened, setOpened] = useState(false);
+	const [savedCollectionID, setSavedCollectionID] = useState(null);
 
 	// useEffect(() => {
 	// 	changeChartData(totalMonth);
@@ -78,6 +82,22 @@ export default function Home() {
 		});
 
 		console.log(codeCardProps);
+	}
+
+	async function saveCollection() {
+		const r: CodeCardCollectionProps = {
+			codeCardProps: codeCardProps,
+		};
+		const req = await fetch("/api/saveCollection", {
+			method: "POST",
+			body: JSON.stringify(r),
+		});
+
+		const resp = await req.json();
+
+		console.log(resp);
+
+		// return setData(newData.results);
 	}
 
 	function addTestURL1() {
@@ -195,7 +215,7 @@ export default function Home() {
 						</Group>
 
 						<Center>
-							<Button>Get Link</Button>
+							<Button onClick={saveCollection}>Get Link</Button>
 						</Center>
 
 						{/* <Button onClick={removeURL}>Remove</Button> */}
