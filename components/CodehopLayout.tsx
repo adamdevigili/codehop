@@ -38,6 +38,22 @@ export interface CodehopLayoutProps {
 	isSavedCollection: boolean;
 }
 
+// Convert between file extensions and Prism language prop
+const extensionToLanguage = {
+	c: "c",
+	cpp: "cpp",
+	css: "css",
+	js: "javascript",
+	jsx: "jsx",
+	go: "go",
+	json: "json",
+	md: "markdown",
+	py: "python",
+	tsx: "tsx",
+	ts: "typescript",
+	yaml: "yaml",
+};
+
 const useStyles = createStyles((theme) => ({
 	titleAnchor: {
 		"&:link": {
@@ -109,14 +125,18 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			.replace("github.com", "raw.githubusercontent.com")
 			.replace("blob/", "");
 
-		// console.log(rawURL);
+		console.log(rawURL);
+
+		const fileExt = rawURL.split(".").pop();
+		console.log("fileExt", fileExt);
+		console.log(extensionToLanguage[fileExt]);
 
 		// console.log(Number(parts[1]));
 		codeCardPropsHandlers.append({
 			id: cardID,
 			url: rawURL,
 			lineNumber: Number(parts[1]),
-			language: "go",
+			language: extensionToLanguage[fileExt],
 			providedURL: url,
 			onRemove: removeCodeCard,
 			isSavedCollection: props.isSavedCollection,

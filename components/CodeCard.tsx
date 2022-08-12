@@ -14,6 +14,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useViewportSize } from "@mantine/hooks";
+import { Language } from "prism-react-renderer";
 
 const lineHighlight = { color: "orange", label: "" };
 
@@ -174,8 +175,8 @@ export default function CodeCard(props: CodeCardProps) {
 							// trim={false}
 							withLineNumbers
 							noCopy
-							// language={props.language}
-							language="javascript"
+							language={props.language as Language}
+							// language="javascript"
 							highlightLines={lineNumberObj}
 							className={classes.prism}
 							ref={prismViewport}
