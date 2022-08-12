@@ -16,6 +16,7 @@ const lineHighlight = { color: "orange", label: "" };
 
 export interface CodeCardCollectionProps {
 	codeCardProps: CodeCardProps[];
+	collectionID: string;
 }
 
 export default function CodeCardCollection(props: CodeCardCollectionProps) {
