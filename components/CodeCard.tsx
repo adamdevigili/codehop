@@ -21,8 +21,13 @@ const lineHighlight = { color: "orange", label: "" };
 
 export interface CodeCardProps {
 	id: string;
+
 	url: string;
 	providedURL: string;
+
+	apiURL: string;
+	token: string;
+
 	lineNumber: number;
 	language: string;
 	onRemove: (key: string) => void;
@@ -63,19 +68,48 @@ export default function CodeCard(props: CodeCardProps) {
 	const [isLoading, setLoading] = useState(false);
 	const [hasLoaded, setHasLoaded] = useState(false);
 
+	// useEffect(() => {
+	// 	setLoading(true);
+	// 	fetch(props.url)
+	// 		.then((res) => {
+	// 			return res.text();
+	// 		})
+	// 		.then((data) => {
+	// 			setCode(data);
+	// 			setLoading(false);
+	// 			return data;
+	// 		})
+	// 		.then((data) => {
+	// 			scrollToLineNumber(data);
+	// 		});
+	// }, []);
+
 	useEffect(() => {
 		setLoading(true);
-		fetch(props.url)
+		// Fetch initial payload from GH API
+		fetch(props.apiURL, {
+			headers: {
+				Authorization: `token ${props.token}`,
+				Accept: "application/vnd.github+json",
+			},
+		})
 			.then((res) => {
-				return res.text();
+				return res.json();
 			})
 			.then((data) => {
-				setCode(data);
-				setLoading(false);
-				return data;
-			})
-			.then((data) => {
-				scrollToLineNumber(data);
+				console.log(data);
+				fetch(data.download_url, {})
+					.then((data) => {
+						return data.text();
+					})
+					.then((data) => {
+						setCode(data);
+						setLoading(false);
+						return data;
+					})
+					.then((data) => {
+						scrollToLineNumber(data);
+					});
 			});
 	}, []);
 
@@ -121,7 +155,7 @@ export default function CodeCard(props: CodeCardProps) {
 		// 	prismViewport.current.getElementsByClassName("mantine-ScrollArea-root")[0]
 		// );
 
-		// console.log(code);
+		// console.log(data);
 		const loc = data.split(/\r\n|\r|\n/).length - 1;
 		// console.log("loc", loc);
 

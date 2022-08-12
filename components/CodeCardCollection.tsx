@@ -33,6 +33,8 @@ export default function CodeCardCollection(props: CodeCardCollectionProps) {
 						key={codeCardProp.id}
 						id={codeCardProp.id}
 						url={codeCardProp.url}
+						apiURL={codeCardProp.apiURL}
+						token={codeCardProp.token}
 						lineNumber={codeCardProp.lineNumber}
 						language={codeCardProp.language}
 						providedURL={codeCardProp.providedURL}

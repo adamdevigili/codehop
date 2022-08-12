@@ -32,6 +32,8 @@ import { v4 } from "uuid";
 import { NextApiRequest } from "next";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
+import LoginButton from "./LoginButton";
+import { useSession } from "next-auth/react";
 
 export interface CodehopLayoutProps {
 	codeCardProps: CodeCardProps[];
@@ -96,6 +98,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	const { classes, cx } = useStyles();
 	const clipboard = useClipboard({ timeout: 500 });
 	const router = useRouter();
+	const { data: session } = useSession();
 
 	// useEffect(() => {
 	// 	changeChartData(totalMonth);
@@ -138,7 +141,21 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			.replace("github.com", "raw.githubusercontent.com")
 			.replace("blob/", "");
 
-		console.log(rawURL);
+		// const urlParts = parts[0].split("/");
+		const apiURL = parts[0]
+			.replace("github.com", "api.github.com/repos")
+			.replace("/blob", "/contents");
+
+		const urlParts = apiURL.split("/");
+		urlParts.splice(7, 1);
+		console.log("urlParts", urlParts);
+
+		const newParts = urlParts.slice(2);
+
+		const newApiURL = "https://" + newParts.join("/");
+		console.log("newApiURL", newApiURL);
+
+		console.log("apiURL", apiURL);
 
 		const fileExt = rawURL.split(".").pop();
 		console.log("fileExt", fileExt);
@@ -148,6 +165,8 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		codeCardPropsHandlers.append({
 			id: cardID,
 			url: rawURL,
+			apiURL: newApiURL,
+			token: session ? (session.accessToken as string) : "",
 			lineNumber: Number(parts[1]),
 			language: extensionToLanguage[fileExt],
 			providedURL: url,
@@ -254,9 +273,14 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 				// }
 				header={
 					<Header height={70} p="sm">
-						<Anchor href="/" className={classes.titleAnchor}>
-							<Title style={{ fontFamily: "Permanent Marker" }}>CODEHOP</Title>
-						</Anchor>
+						<Group position="apart">
+							<Anchor href="/" className={classes.titleAnchor}>
+								<Title style={{ fontFamily: "Permanent Marker" }}>
+									CODEHOP
+								</Title>
+							</Anchor>
+							<LoginButton />
+						</Group>
 					</Header>
 				}
 			>
@@ -316,7 +340,8 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 									</HoverCard.Target>
 									<HoverCard.Dropdown>
 										<Text size="sm">
-											Currently only public repositories are supported
+											You must be signed in to GitHub to add private
+											repositories
 										</Text>
 									</HoverCard.Dropdown>
 								</HoverCard>
