@@ -92,9 +92,13 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		[]
 	);
 
+	// useEffect(() => {
+	// 	codeCardPropsHandlers.setState(props.codeCardProps);
+	// }, [codeCardPropsHandlers, props.codeCardProps]);
+
 	useEffect(() => {
 		codeCardPropsHandlers.setState(props.codeCardProps);
-	}, [props.codeCardProps]);
+	}, [codeCardPropsHandlers]);
 
 	const theme = useMantineTheme();
 	const [opened, setOpened] = useState(false);
@@ -120,12 +124,22 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	});
 
 	function removeCodeCard(id: string) {
-		console.log(codeCardProps);
-		console.log("removeCodeCard", "id", id);
+		console.log("removeCodeCard", "id", id, "codeCardProps", codeCardProps);
+		const idx = codeCardProps.findIndex((x) => x.id === id);
+		console.log("idx", idx);
 		codeCardPropsHandlers.filter((item) => item.id !== id);
 	}
 
+	function updateCodeCardNote(id: string, note: string) {
+		console.log("updateCodeCardNote", "id", id, "codeCardProps", codeCardProps);
+		const idx = codeCardProps.findIndex((x) => x.id === id);
+		console.log("idx", idx);
+		codeCardPropsHandlers.setItemProp(idx, "note", note);
+	}
+
 	function addCodeCard(url: string) {
+		console.log("addCodeCard", "url", url, "codeCardProps", codeCardProps);
+
 		if (codeCardProps.length >= maxCodeCards) {
 			showNotification({
 				color: "red",
@@ -136,9 +150,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		}
 
 		const cardID = v4();
-		console.log("url", url, "cardID", cardID);
-		// const url =
-		// 	"https://github.com/adamdevigili/tarkov-charts/blob/master/api/ammo.go#L10";
+		// console.log("url", url, "cardID", cardID);
 
 		const parts = url.split("#L");
 
@@ -153,33 +165,36 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 		const urlParts = apiURL.split("/");
 		urlParts.splice(7, 1);
-		console.log("urlParts", urlParts);
+		// console.log("urlParts", urlParts);
 
 		const newParts = urlParts.slice(2);
 
 		const newApiURL = "https://" + newParts.join("/");
-		console.log("newApiURL", newApiURL);
+		// console.log("newApiURL", newApiURL);
 
-		console.log("apiURL", apiURL);
+		// console.log("apiURL", apiURL);
 
 		const fileExt = rawURL.split(".").pop();
-		console.log("fileExt", fileExt);
-		console.log(extensionToLanguage[fileExt]);
+		// console.log("fileExt", fileExt);
+		// console.log(extensionToLanguage[fileExt]);
 
 		// console.log(Number(parts[1]));
 		codeCardPropsHandlers.append({
 			id: cardID,
-			url: rawURL,
 			apiURL: newApiURL,
-			token: session ? (session.accessToken as string) : "",
+			token: session ? (session.accessToken as string) : null,
 			lineNumber: Number(parts[1]),
 			language: extensionToLanguage[fileExt],
 			providedURL: url,
-			onRemove: removeCodeCard,
+
 			isSavedCollection: props.isSavedCollection,
+			note: "",
+
+			onRemove: removeCodeCard,
+			onNoteChange: updateCodeCardNote,
 		});
 
-		console.log(codeCardProps);
+		// console.log(codeCardProps);
 	}
 
 	async function saveCollection() {
@@ -205,7 +220,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 		router.push("/" + resp.id);
 
-		console.log(resp.id);
+		// console.log(resp.id);
 
 		// return setData(newData.results);
 	}
@@ -235,10 +250,6 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		addTestURL1();
 		addTestURL2();
 		addTestURL3();
-	}
-
-	function removeURL() {
-		codeCardPropsHandlers.pop();
 	}
 
 	return (
@@ -339,12 +350,12 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							</form>
 						)}
 
-						{/* <Group>
+						<Group>
 							<Button onClick={addTestURL1}>Add Test URL 1</Button>
 							<Button onClick={addTestURL2}>Add Test URL 2</Button>
 							<Button onClick={addTestURL3}>Add Test URL 3</Button>
 							<Button onClick={addAll}>Add All</Button>
-						</Group> */}
+						</Group>
 					</Container>
 					<Container style={{ width: "100%" }} fluid={true}>
 						{codeCardProps.length == 0 ? (
@@ -359,7 +370,8 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 									<HoverCard.Dropdown>
 										<Text size="sm">
 											You must be signed in to GitHub to add private
-											repositories
+											repositories. Organization repositories cannot currently
+											be added.
 										</Text>
 									</HoverCard.Dropdown>
 								</HoverCard>

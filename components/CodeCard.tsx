@@ -11,27 +11,44 @@ import {
 	createStyles,
 	Anchor,
 	Code,
+	Textarea,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useViewportSize } from "@mantine/hooks";
 import { Language } from "prism-react-renderer";
+import { Pencil } from "tabler-icons-react";
 
 const lineHighlight = { color: "orange", label: "" };
 
 export interface CodeCardProps {
 	id: string;
 
-	url: string;
+	// URL provided by user
 	providedURL: string;
 
+	// Parsed URL for GH API
 	apiURL: string;
+
+	// User token if logged in
 	token: string;
 
+	// Code line number
 	lineNumber: number;
+
+	// Target language
 	language: string;
-	onRemove: (key: string) => void;
+
+	// Flag to note if this card belongs to a saved collection
+	// Impacts conditional renders
 	isSavedCollection: boolean;
+
+	// Note for adding extra context
+	note: string;
+
+	// State modifiers
+	onRemove: (id: string) => void;
+	onNoteChange: (id: string, note: string) => void;
 }
 
 const useStyle = createStyles(() => ({
@@ -48,17 +65,20 @@ const useStyle = createStyles(() => ({
 			// cursor: "auto",
 		},
 	},
-	cardRemove: {
-		height: "70vh",
-	},
 	card: {
 		height: "70vh",
 	},
 	prism: {
 		// border: "1px solid blue",
-		height: "100%",
+		height: "95%",
 		display: "flex",
 		flexDirection: "column",
+	},
+	cardNote: {
+		// border: "1px solid red",
+		border: "0px none",
+		// height: "5%",
+		// color: "red",
 	},
 }));
 
@@ -87,17 +107,23 @@ export default function CodeCard(props: CodeCardProps) {
 	useEffect(() => {
 		setLoading(true);
 		// Fetch initial payload from GH API
-		fetch(props.apiURL, {
-			headers: {
-				Authorization: `token ${props.token}`,
-				Accept: "application/vnd.github+json",
-			},
-		})
+		fetch(
+			props.apiURL,
+			// Only provide auth headers if user is signed in
+			props.token
+				? {
+						headers: {
+							Authorization: `token ${props.token}`,
+							Accept: "application/vnd.github+json",
+						},
+				  }
+				: null
+		)
 			.then((res) => {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(data);
+				// console.log(data);
 				fetch(data.download_url, {})
 					.then((data) => {
 						return data.text();
@@ -120,28 +146,6 @@ export default function CodeCard(props: CodeCardProps) {
 	};
 
 	const prismViewport = useRef<HTMLDivElement>();
-	// const prismScrollAreaViewport = useRef<HTMLDivElement>(prismViewport.current.getElementsByClassName("mantine-ScrollArea-root")[0]);
-
-	// const scrollToCenter = () =>
-	// 	prismViewport.current.scrollTo({
-	// 		top: prismViewport.current.scrollHeight / 2,
-	// 		behavior: "smooth",
-	// 	});
-
-	const scrollToBottom = () => {
-		const scrollAreaViewport = prismViewport.current
-			.getElementsByClassName("mantine-ScrollArea-root")[0]
-			.getElementsByClassName("mantine-ScrollArea-viewport")[0];
-		// const pView =
-		// console.log(
-		// 	"current",
-		// 	prismViewport.current.getElementsByClassName("mantine-ScrollArea-root")[0]
-		// );
-		scrollAreaViewport.scrollTo({
-			top: scrollAreaViewport.scrollHeight,
-			behavior: "smooth",
-		});
-	};
 
 	const scrollToLineNumber = async (data: any) => {
 		await new Promise((r) => setTimeout(r, 100));
@@ -149,42 +153,20 @@ export default function CodeCard(props: CodeCardProps) {
 		const scrollAreaViewport = prismViewport.current
 			.getElementsByClassName("mantine-ScrollArea-root")[0]
 			.getElementsByClassName("mantine-ScrollArea-viewport")[0];
-		// const pView =
-		// console.log(
-		// 	"current",
-		// 	prismViewport.current.getElementsByClassName("mantine-ScrollArea-root")[0]
-		// );
 
-		// console.log(data);
+		// Get line count
 		const loc = data.split(/\r\n|\r|\n/).length - 1;
-		// console.log("loc", loc);
 
+		// Calculate scroll location target
 		const targetPos =
 			(props.lineNumber / loc) * scrollAreaViewport.scrollHeight -
 			scrollAreaViewport.clientHeight / 2;
-
-		// console.log(
-		// 	"lineNumber",
-		// 	props.lineNumber,
-		// 	"linesOfCode",
-		// 	linesOfCode,
-		// 	"scrollHeight",
-		// 	scrollAreaViewport.scrollHeight,
-		// 	"clientHeight",
-		// 	scrollAreaViewport.clientHeight,
-		// 	"targetPos",
-		// 	targetPos
-		// );
 
 		scrollAreaViewport.scrollTo({
 			top: targetPos,
 			behavior: "smooth",
 		});
 	};
-
-	// if (!isLoading) {
-	// 	scrollToLineNumber();
-	// }
 
 	return (
 		<Container size="sm" px="m">
@@ -232,6 +214,20 @@ export default function CodeCard(props: CodeCardProps) {
 							{code}
 						</Prism>
 					)}
+					<Textarea
+						className={classes.cardNote}
+						// placeholder={props.note ? props.note : "Add a note"}
+						placeholder={!props.note && "Add a note"}
+						defaultValue={props.note}
+						maxRows={1}
+						autosize={true}
+						styles={{ input: { border: "0px none" } }}
+						// variant="filled"
+						// icon={<Pencil />}
+						onBlur={(event) =>
+							props.onNoteChange(props.id, event.currentTarget.value)
+						}
+					/>
 				</Card>
 			</Stack>
 		</Container>
