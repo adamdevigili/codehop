@@ -28,16 +28,16 @@ export default function App(props: AppProps) {
 					colors: {
 						// override dark colors to change them for all components
 						dark: [
-							"#d5d7e0", // title text
-							"#acaebf",
-							"#8c8fa3",
-							"#666980", // input text
-							"#4d4f66", // input border
-							"#34354a",
-							"#2b2c3d", // input background
-							"#0C4160", // header
-							"#071330", // main
-							"#01010a",
+							"#d5d7e0", // 0 - title text
+							"#acaebf", // 1
+							"#8c8fa3", // 2
+							"#666980", // 3 - input text
+							"#4d4f66", // 4 - input border
+							"#34354a", // 5
+							"#2b2c3d", // 6 - input background
+							"#0C4160", // 7 - header
+							"#071330", // 8 - main
+							"#01010a", // 9
 						],
 					},
 				}}

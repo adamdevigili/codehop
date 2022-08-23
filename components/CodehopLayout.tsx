@@ -19,6 +19,7 @@ import {
 	Anchor,
 	createStyles,
 	HoverCard,
+	Loader,
 } from "@mantine/core";
 import { useListState, useId, useClipboard } from "@mantine/hooks";
 import React, { useEffect, useRef, useState } from "react";
@@ -36,7 +37,7 @@ import LoginButton from "./LoginButton";
 import { useSession } from "next-auth/react";
 
 export interface CodehopLayoutProps {
-	codeCardProps: CodeCardProps[];
+	codeCardPropsInit: CodeCardProps[];
 	collectionID: string;
 	isSavedCollection: boolean;
 }
@@ -92,10 +93,6 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		[]
 	);
 
-	useEffect(() => {
-		codeCardPropsHandlers.setState(props.codeCardProps);
-	}, [props.codeCardProps]);
-
 	const theme = useMantineTheme();
 	const [opened, setOpened] = useState(false);
 	const [savedCollectionID, setSavedCollectionID] = useState(null);
@@ -105,9 +102,9 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	const router = useRouter();
 	const { data: session } = useSession();
 
-	// useEffect(() => {
-	// 	changeChartData(totalMonth);
-	//   }, [totalMonth.length]);
+	useEffect(() => {
+		codeCardPropsHandlers.setState(props.codeCardPropsInit);
+	}, [props.codeCardPropsInit]);
 
 	const urlInput = useForm({
 		initialValues: {
@@ -118,12 +115,6 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			//   email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
 		},
 	});
-
-	function removeCodeCard(id: string) {
-		console.log(codeCardProps);
-		console.log("removeCodeCard", "id", id);
-		codeCardPropsHandlers.filter((item) => item.id !== id);
-	}
 
 	function addCodeCard(url: string) {
 		if (codeCardProps.length >= maxCodeCards) {
@@ -169,6 +160,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		// console.log(Number(parts[1]));
 		codeCardPropsHandlers.append({
 			id: cardID,
+			idx: codeCardProps.length,
 			url: rawURL,
 			apiURL: newApiURL,
 			token: session ? (session.accessToken as string) : "",
@@ -180,6 +172,13 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		});
 
 		console.log(codeCardProps);
+	}
+
+	function removeCodeCard(id: string) {
+		console.log(codeCardProps);
+		console.log("removeCodeCard", "id", id);
+		codeCardPropsHandlers.filter((item) => item.id !== id);
+		codeCardPropsHandlers.apply((item, index) => ({ ...item, idx: index }));
 	}
 
 	async function saveCollection() {
@@ -349,20 +348,33 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 					<Container style={{ width: "100%" }} fluid={true}>
 						{codeCardProps.length == 0 ? (
 							<Center>
-								<Title className={classes.textPrompt}>
-									Start by adding GitHub links to files
-								</Title>
-								<HoverCard width={280} shadow="md">
-									<HoverCard.Target>
-										<Title>*</Title>
-									</HoverCard.Target>
-									<HoverCard.Dropdown>
-										<Text size="sm">
-											You must be signed in to GitHub to add private
-											repositories
-										</Text>
-									</HoverCard.Dropdown>
-								</HoverCard>
+								{props.isSavedCollection ? (
+									<Title className={classes.textPrompt}>
+										<Stack>
+											Loading collection...
+											<Center>
+												<Loader />
+											</Center>
+										</Stack>
+									</Title>
+								) : (
+									<Center>
+										<Title className={classes.textPrompt}>
+											Start by adding GitHub links to files
+										</Title>
+										<HoverCard width={280} shadow="md">
+											<HoverCard.Target>
+												<Title>*</Title>
+											</HoverCard.Target>
+											<HoverCard.Dropdown>
+												<Text size="sm">
+													You must be signed in to GitHub to add private
+													repositories
+												</Text>
+											</HoverCard.Dropdown>
+										</HoverCard>
+									</Center>
+								)}
 							</Center>
 						) : (
 							<CodeCardCollection
