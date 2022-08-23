@@ -329,12 +329,12 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							</form>
 						)}
 
-						<Group>
+						{/* <Group>
 							<Button onClick={addTestURL1}>Add Test URL 1</Button>
 							<Button onClick={addTestURL2}>Add Test URL 2</Button>
 							<Button onClick={addTestURL3}>Add Test URL 3</Button>
 							<Button onClick={addAll}>Add All</Button>
-						</Group>
+						</Group> */}
 					</Container>
 					<Container style={{ width: "100%" }} fluid={true}>
 						{codeCardProps.length == 0 ? (
