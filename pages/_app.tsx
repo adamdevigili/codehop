@@ -29,7 +29,7 @@ export default function App(props: AppProps) {
 						// override dark colors to change them for all components
 						dark: [
 							"#d5d7e0", // 0 - title text
-							"#acaebf", // 1
+							"#626378", // 1 - dark text (footer)
 							"#8c8fa3", // 2
 							"#666980", // 3 - input text
 							"#4d4f66", // 4 - input border
@@ -40,6 +40,7 @@ export default function App(props: AppProps) {
 							"#01010a", // 9
 						],
 					},
+					// fontFamily: "Comfortaa",
 				}}
 			>
 				<NotificationsProvider position="top-right">

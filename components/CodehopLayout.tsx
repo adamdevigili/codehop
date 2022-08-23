@@ -33,7 +33,7 @@ import { v4 } from "uuid";
 import { NextApiRequest } from "next";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
-import LoginButton from "./LoginButton";
+import Account from "./Account";
 import { useSession } from "next-auth/react";
 
 export interface CodehopLayoutProps {
@@ -71,17 +71,17 @@ const useStyles = createStyles((theme) => ({
 			color: "inherit",
 			// cursor: "auto",
 		},
-		fontFamily: theme.fontFamily,
+		// fontFamily: theme.fontFamily,
 	},
 	textPrompt: {
-		fontFamily: theme.fontFamily,
+		// fontFamily: theme.fontFamily,
 	},
 	chButton: {
-		backgroundColor: "#0C4160",
+		backgroundColor: theme.colors.dark[7],
 	},
 	footer: {
 		backgroundColor: "transparent",
-		color: "#626378",
+		color: theme.colors.dark[1],
 		borderTop: "unset",
 	},
 }));
@@ -236,10 +236,6 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		addTestURL3();
 	}
 
-	function removeURL() {
-		codeCardPropsHandlers.pop();
-	}
-
 	return (
 		<div>
 			<AppShell
@@ -270,11 +266,6 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 				// 		</Aside>
 				// 	</MediaQuery>
 				// }
-				// footer={
-				// 	<Footer height={60} p="md">
-				// 		Application footer
-				// 	</Footer>
-				// }
 				header={
 					<Header height={70} p="sm">
 						<Group position="apart">
@@ -283,7 +274,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 									CODEHOP
 								</Title>
 							</Anchor>
-							<LoginButton />
+							<Account />
 						</Group>
 					</Header>
 				}
@@ -338,12 +329,12 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							</form>
 						)}
 
-						{/* <Group>
+						<Group>
 							<Button onClick={addTestURL1}>Add Test URL 1</Button>
 							<Button onClick={addTestURL2}>Add Test URL 2</Button>
 							<Button onClick={addTestURL3}>Add Test URL 3</Button>
 							<Button onClick={addAll}>Add All</Button>
-						</Group> */}
+						</Group>
 					</Container>
 					<Container style={{ width: "100%" }} fluid={true}>
 						{codeCardProps.length == 0 ? (
@@ -369,7 +360,8 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 											<HoverCard.Dropdown>
 												<Text size="sm">
 													You must be signed in to GitHub to add private
-													repositories
+													repositories. Organization repositories cannot
+													currently be added.
 												</Text>
 											</HoverCard.Dropdown>
 										</HoverCard>
