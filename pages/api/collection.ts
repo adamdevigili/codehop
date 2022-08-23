@@ -17,13 +17,14 @@ export default async function collection(
 		// const collection = {
 		// 	test: "test-insert",
 		// };
-		console.log(collection);
+		// console.log(collection);
 
 		const parsed = JSON.parse(collection);
 		parsed.codeCardProps.forEach((element) => {
 			element.isSavedCollection = true;
 		});
-		console.log(parsed);
+		parsed["_id"] = parsed.collectionID;
+		// console.log(parsed);
 		const { db } = await connectToDatabase();
 
 		// const movies = await db
@@ -34,7 +35,7 @@ export default async function collection(
 		// 	.toArray();
 
 		const result = await db.collection("savedCollections").insertOne(parsed);
-		console.log(`A document was inserted with the _id: ${result.insertedId}`);
+		// console.log(`A document was inserted with the _id: ${result.insertedId}`);
 
 		const resp: SaveCollectionResponse = {
 			id: result.insertedId,
@@ -47,13 +48,13 @@ export default async function collection(
 		// const collection = {
 		// 	test: "test-insert",
 		// };
-		console.log("fetching " + collectionID);
+		console.log("API: fetching " + collectionID);
 
 		const { db } = await connectToDatabase();
 
 		const savedCodeCardProps = await db
 			.collection("savedCollections")
-			.findOne({ _id: new ObjectId(collectionID) });
+			.findOne({ _id: collectionID });
 
 		console.log(savedCodeCardProps);
 
