@@ -87,12 +87,18 @@ export default function CodeCard(props: CodeCardProps) {
 	useEffect(() => {
 		setLoading(true);
 		// Fetch initial payload from GH API
-		fetch(props.apiURL, {
-			headers: {
-				Authorization: `token ${props.token}`,
-				Accept: "application/vnd.github+json",
-			},
-		})
+		fetch(
+			props.apiURL,
+			// Only provide auth headers if user is signed in
+			props.token
+				? {
+						headers: {
+							Authorization: `token ${props.token}`,
+							Accept: "application/vnd.github+json",
+						},
+				  }
+				: null
+		)
 			.then((res) => {
 				return res.json();
 			})
