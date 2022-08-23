@@ -1,8 +1,9 @@
 import { useListState } from "@mantine/hooks";
 import { useRouter } from "next/router";
+import React from "react";
 import { useEffect } from "react";
-import { CodeCardProps } from "../components/CodeCard";
-import CodehopLayout from "../components/CodehopLayout";
+import { CodeCardProps } from "../../components/CodeCard";
+import CodehopLayout from "../../components/CodehopLayout";
 
 export default function SavedCollection() {
 	const router = useRouter();
@@ -15,7 +16,7 @@ export default function SavedCollection() {
 	useEffect(() => {
 		// console.log("collectionID", collectionID);
 		if (collectionID) {
-			fetch(`/api/collection?collection_id=${collectionID}`)
+			fetch(`/api/collections?collection_id=${collectionID}`)
 				.then((res) => {
 					return res.json();
 				})

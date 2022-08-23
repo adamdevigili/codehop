@@ -23,6 +23,7 @@ const lineHighlight = { color: "orange", label: "" };
 export interface CodeCardCollectionProps {
 	codeCardProps: CodeCardProps[];
 	collectionID: string;
+	owner: string;
 }
 
 const useStyle = createStyles(() => ({

@@ -158,6 +158,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		console.log(extensionToLanguage[fileExt]);
 
 		// console.log(Number(parts[1]));
+		console.log("session", session);
 		codeCardPropsHandlers.append({
 			id: cardID,
 			idx: codeCardProps.length,
@@ -187,8 +188,9 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		const r: CodeCardCollectionProps = {
 			codeCardProps: codeCardProps,
 			collectionID: collectionID,
+			owner: session.user.email,
 		};
-		const req = await fetch("/api/collection", {
+		const req = await fetch("/api/collections", {
 			method: "POST",
 			body: JSON.stringify(r),
 		});
@@ -205,7 +207,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			message: "Collection ID saved to clipboard",
 		});
 
-		router.push("/" + resp.id);
+		router.push("/collections/" + resp.id);
 
 		// console.log(resp.id);
 
@@ -332,12 +334,12 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 							</form>
 						)}
 
-						{/* <Group>
+						<Group>
 							<Button onClick={addTestURL1}>Add Test URL 1</Button>
 							<Button onClick={addTestURL2}>Add Test URL 2</Button>
 							<Button onClick={addTestURL3}>Add Test URL 3</Button>
 							<Button onClick={addAll}>Add All</Button>
-						</Group> */}
+						</Group>
 					</Container>
 					<Container style={{ width: "100%" }} fluid={true}>
 						{codeCardProps.length == 0 ? (
