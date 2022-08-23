@@ -104,7 +104,7 @@ export default function CodeCard(props: CodeCardProps) {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(data);
+				// console.log(data);
 				fetch(data.download_url, {})
 					.then((data) => {
 						return data.text();

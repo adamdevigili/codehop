@@ -183,9 +183,10 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 	async function saveCollection() {
 		setSavingCollection(true);
+		const collectionID = v4();
 		const r: CodeCardCollectionProps = {
 			codeCardProps: codeCardProps,
-			collectionID: props.collectionID,
+			collectionID: collectionID,
 		};
 		const req = await fetch("/api/collection", {
 			method: "POST",
@@ -193,6 +194,8 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		});
 
 		const resp = await req.json();
+
+		// console.log(resp);
 
 		clipboard.copy(resp.id);
 		setSavingCollection(false);
@@ -204,7 +207,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 		router.push("/" + resp.id);
 
-		console.log(resp.id);
+		// console.log(resp.id);
 
 		// return setData(newData.results);
 	}

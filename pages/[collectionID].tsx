@@ -8,19 +8,23 @@ export default function SavedCollection() {
 	const router = useRouter();
 	const { collectionID } = router.query;
 
-	const [codeCardProps, codeCardPropsHandlers] = useListState([]);
+	const [codeCardProps, codeCardPropsHandlers] = useListState<CodeCardProps>(
+		[]
+	);
 
 	useEffect(() => {
-		// console.log(collectionID);
-		fetch(`/api/collection?collection_id=${collectionID}`)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				console.log("fetched", data.codeCardProps.codeCardProps);
-				codeCardPropsHandlers.setState(data.codeCardProps.codeCardProps);
-				console.log("codeCardProps", codeCardProps);
-			});
+		// console.log("collectionID", collectionID);
+		if (collectionID) {
+			fetch(`/api/collection?collection_id=${collectionID}`)
+				.then((res) => {
+					return res.json();
+				})
+				.then((data) => {
+					// console.log("fetched", data);
+					codeCardPropsHandlers.setState(data.codeCardProps.codeCardProps);
+					// console.log("codeCardProps", codeCardProps);
+				});
+		}
 	}, [collectionID]);
 
 	return (
