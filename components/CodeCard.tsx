@@ -207,7 +207,7 @@ export default function CodeCard(props: CodeCardProps) {
 					{!props.isSavedCollection && (
 						<Button
 							size="xs"
-							color={"red"}
+							color="red"
 							onClick={() => props.onRemove(props.id)}
 						>
 							Remove
