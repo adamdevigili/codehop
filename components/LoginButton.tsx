@@ -4,7 +4,7 @@ import { BrandGithub } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
 	chButton: {
-		backgroundColor: "#071330",
+		backgroundColor: theme.colors.dark[8],
 	},
 }));
 

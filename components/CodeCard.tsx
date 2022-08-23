@@ -21,6 +21,7 @@ const lineHighlight = { color: "orange", label: "" };
 
 export interface CodeCardProps {
 	id: string;
+	idx: number;
 
 	url: string;
 	providedURL: string;
