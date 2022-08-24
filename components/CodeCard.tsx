@@ -11,6 +11,7 @@ import {
 	createStyles,
 	Anchor,
 	Code,
+	Textarea,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -24,15 +25,31 @@ export interface CodeCardProps {
 	idx: number;
 
 	url: string;
+	// URL provided by user
 	providedURL: string;
 
+	// Parsed URL for GH API
 	apiURL: string;
+
+	// User token if logged in
 	token: string;
 
+	// Code line number
 	lineNumber: number;
+
+	// Target language
 	language: string;
-	onRemove: (key: string) => void;
+
+	// Flag to note if this card belongs to a saved collection
+	// Impacts conditional renders
 	isSavedCollection: boolean;
+
+	// Note for adding extra context
+	note: string;
+
+	// State modifiers
+	onRemove: (id: string) => void;
+	onNoteChange: (id: string, note: string) => void;
 }
 
 const useStyle = createStyles(() => ({
@@ -57,9 +74,15 @@ const useStyle = createStyles(() => ({
 	},
 	prism: {
 		// border: "1px solid blue",
-		height: "100%",
+		height: "95%",
 		display: "flex",
 		flexDirection: "column",
+	},
+	cardNote: {
+		// border: "1px solid red",
+		border: "0px none",
+		// height: "5%",
+		// color: "red",
 	},
 }));
 
@@ -118,7 +141,7 @@ export default function CodeCard(props: CodeCardProps) {
 						scrollToLineNumber(data);
 					});
 			});
-	}, []);
+	}, [props.apiURL]);
 
 	const { classes } = useStyle();
 
@@ -239,6 +262,23 @@ export default function CodeCard(props: CodeCardProps) {
 							{code}
 						</Prism>
 					)}
+					<Textarea
+						className={classes.cardNote}
+						// placeholder={props.note ? props.note : "Add a note"}
+						placeholder={
+							!props.note && !props.isSavedCollection && "Add a note"
+						}
+						defaultValue={props.note}
+						maxRows={1}
+						autosize={true}
+						styles={{ input: { border: "0px none" } }}
+						// variant="filled"
+						// icon={<Pencil />}
+						onBlur={(event) =>
+							props.onNoteChange(props.id, event.currentTarget.value)
+						}
+						disabled={props.isSavedCollection}
+					/>
 				</Card>
 			</Stack>
 		</Container>

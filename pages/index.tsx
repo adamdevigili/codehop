@@ -32,7 +32,7 @@ import CodehopLayout from "../components/CodehopLayout";
 export default function Home() {
 	return (
 		<CodehopLayout
-			codeCardPropsInit={[]}
+			layoutCodeCardProps={[]}
 			collectionID=""
 			isSavedCollection={false}
 		/>
