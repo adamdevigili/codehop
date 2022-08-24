@@ -37,7 +37,7 @@ import Account from "./Account";
 import { useSession } from "next-auth/react";
 
 export interface CodehopLayoutProps {
-	codeCardPropsInit: CodeCardProps[];
+	layoutCodeCardProps: CodeCardProps[];
 	collectionID: string;
 	isSavedCollection: boolean;
 }
@@ -92,6 +92,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	const [codeCardProps, codeCardPropsHandlers] = useListState<CodeCardProps>(
 		[]
 	);
+	const latestCCP = useRef([]);
 
 	const theme = useMantineTheme();
 	const [opened, setOpened] = useState(false);
@@ -103,8 +104,18 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 	const { data: session } = useSession();
 
 	useEffect(() => {
-		codeCardPropsHandlers.setState(props.codeCardPropsInit);
-	}, [props.codeCardPropsInit]);
+		console.log("calling useEffect");
+		if (props.layoutCodeCardProps.length > 0) {
+			console.log("updating from useEffect", props);
+
+			codeCardPropsHandlers.setState(props.layoutCodeCardProps);
+		}
+	}, [props.layoutCodeCardProps]);
+
+	useEffect(() => {
+		console.log("calling useEffect2");
+		latestCCP.current = codeCardProps;
+	}, [codeCardProps, codeCardPropsHandlers, props]);
 
 	const urlInput = useForm({
 		initialValues: {
@@ -127,7 +138,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 		}
 
 		const cardID = v4();
-		console.log("url", url, "cardID", cardID);
+		// console.log("url", url, "cardID", cardID);
 		// const url =
 		// 	"https://github.com/adamdevigili/tarkov-charts/blob/master/api/ammo.go#L10";
 
@@ -144,18 +155,18 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 
 		const urlParts = apiURL.split("/");
 		urlParts.splice(7, 1);
-		console.log("urlParts", urlParts);
+		// console.log("urlParts", urlParts);
 
 		const newParts = urlParts.slice(2);
 
 		const newApiURL = "https://" + newParts.join("/");
-		console.log("newApiURL", newApiURL);
+		// console.log("newApiURL", newApiURL);
 
-		console.log("apiURL", apiURL);
+		// console.log("apiURL", apiURL);
 
 		const fileExt = rawURL.split(".").pop();
-		console.log("fileExt", fileExt);
-		console.log(extensionToLanguage[fileExt]);
+		// console.log("fileExt", fileExt);
+		// console.log(extensionToLanguage[fileExt]);
 
 		// console.log(Number(parts[1]));
 		codeCardPropsHandlers.append({
@@ -168,24 +179,51 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 			language: extensionToLanguage[fileExt],
 			providedURL: url,
 			onRemove: removeCodeCard,
+			onNoteChange: updateCodeCardNote,
 			isSavedCollection: props.isSavedCollection,
+			note: "",
 		});
 
 		console.log(codeCardProps);
 	}
 
 	function removeCodeCard(id: string) {
-		console.log(codeCardProps);
 		console.log("removeCodeCard", "id", id);
+		console.log("codeCardProps", codeCardProps);
+
 		codeCardPropsHandlers.filter((item) => item.id !== id);
 		codeCardPropsHandlers.apply((item, index) => ({ ...item, idx: index }));
 	}
+
+	function updateCodeCardNote(id: string, note: string) {
+		console.log(
+			"updateCodeCardNote",
+			"id",
+			id,
+			"codeCardProps",
+			codeCardProps,
+			"latestCCP",
+			latestCCP
+		);
+		// const idx = codeCardProps.findIndex((x) => x.id === id);
+
+		// console.log("idx", idx);
+		// codeCardPropsHandlers.setItemProp(idx, "note", note);
+
+		const idx = latestCCP.current.findIndex((x) => x.id === id);
+		console.log("idx", idx);
+		codeCardPropsHandlers.setItemProp(idx, "note", note);
+	}
+
+	// function updateCardNote(id: string, note: string) {
+	// 	console.log("updateCardNote", "id", id, "note", note);
+	// }
 
 	async function saveCollection() {
 		setSavingCollection(true);
 		const collectionID = v4();
 		const r: CodeCardCollectionProps = {
-			codeCardProps: codeCardProps,
+			codeCardProps: latestCCP.current,
 			collectionID: collectionID,
 		};
 		const req = await fetch("/api/collection", {

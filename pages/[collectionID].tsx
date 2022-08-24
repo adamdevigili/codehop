@@ -29,7 +29,7 @@ export default function SavedCollection() {
 
 	return (
 		<CodehopLayout
-			codeCardPropsInit={codeCardProps}
+			layoutCodeCardProps={codeCardProps}
 			collectionID={collectionID as string}
 			isSavedCollection={true}
 		/>

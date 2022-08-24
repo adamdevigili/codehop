@@ -52,19 +52,7 @@ export default function CodeCardCollection(props: CodeCardCollectionProps) {
 							/>
 						)}
 
-						<CodeCard
-							key={codeCardProp.id}
-							id={codeCardProp.id}
-							idx={codeCardProp.idx}
-							url={codeCardProp.url}
-							apiURL={codeCardProp.apiURL}
-							token={codeCardProp.token}
-							lineNumber={codeCardProp.lineNumber}
-							language={codeCardProp.language}
-							providedURL={codeCardProp.providedURL}
-							onRemove={codeCardProp.onRemove}
-							isSavedCollection={codeCardProp.isSavedCollection}
-						/>
+						<CodeCard {...codeCardProp} />
 					</Center>
 				))}
 			</Group>
