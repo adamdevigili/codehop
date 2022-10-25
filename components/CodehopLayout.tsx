@@ -73,17 +73,27 @@ const useStyles = createStyles((theme) => ({
 		},
 		// fontFamily: theme.fontFamily,
 	},
+	titleText: {
+		fontFamily: "Permanent Marker",
+	},
 	textPrompt: {
 		// fontFamily: theme.fontFamily,
 	},
+	mainText: {
+		fontSize: "60px",
+		fontFamily: "Permanent Marker",
+	},
 	chButton: {
-		backgroundColor: theme.colors.dark[7],
+		backgroundColor: theme.colors.dark[9],
 	},
 	footer: {
 		backgroundColor: "transparent",
 		color: theme.colors.dark[1],
 		borderTop: "unset",
 		textAlign: "right",
+	},
+	header: {
+		borderBottom: "unset",
 	},
 }));
 
@@ -309,12 +319,10 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 				// 	</MediaQuery>
 				// }
 				header={
-					<Header height={70} p="sm">
+					<Header className={classes.header} height={70} p="sm">
 						<Group position="apart">
 							<Anchor href="/" className={classes.titleAnchor}>
-								<Title style={{ fontFamily: "Permanent Marker" }}>
-									CODEHOP
-								</Title>
+								<Title className={classes.titleText}>CODEHOP</Title>
 							</Anchor>
 							<Account />
 						</Group>
@@ -338,6 +346,12 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 					// style={{ height: "100%", border: "1px solid green" }}
 					justify={codeCardProps.length === 0 ? "center" : "flex-start"}
 				>
+					{/* <Center>
+						<Title className={classes.mainText}>
+							Visualize Your Code Connections
+						</Title>
+					</Center>
+					<Space h={50} /> */}
 					<Container>
 						{!props.isSavedCollection && (
 							<form
@@ -414,7 +428,7 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 												target="_blank"
 												style={{ color: "gray" }}
 											>
-												<Text>Want to see an example?</Text>
+												<Text>Check out an example here</Text>
 											</Anchor>
 										</Center>
 									</Stack>

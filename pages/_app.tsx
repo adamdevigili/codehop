@@ -30,14 +30,14 @@ export default function App(props: AppProps) {
 						dark: [
 							"#d5d7e0", // 0 - title text
 							"#626378", // 1 - dark text (footer)
-							"#8c8fa3", // 2
+							"#e63946", // 2 - remove button
 							"#666980", // 3 - input text
 							"#4d4f66", // 4 - input border
-							"#34354a", // 5
+							"#34354a", // 5 - editor background
 							"#2b2c3d", // 6 - input background
-							"#0C4160", // 7 - header
+							"#071330", // 7 - header
 							"#071330", // 8 - main
-							"#01010a", // 9
+							"#0C4160", // 9 - buttons
 						],
 					},
 					// fontFamily: "Comfortaa",

@@ -52,7 +52,7 @@ export interface CodeCardProps {
 	onNoteChange: (id: string, note: string) => void;
 }
 
-const useStyle = createStyles(() => ({
+const useStyle = createStyles((theme) => ({
 	cardLink: {
 		"&:link": {
 			textDecoration: "inherit",
@@ -77,12 +77,16 @@ const useStyle = createStyles(() => ({
 		height: "95%",
 		display: "flex",
 		flexDirection: "column",
+		backgroundColor: theme.colors.dark[5],
 	},
 	cardNote: {
 		// border: "1px solid red",
 		border: "0px none",
 		// height: "5%",
 		// color: "red",
+	},
+	removeButton: {
+		backgroundColor: theme.colors.dark[2],
 	},
 }));
 
@@ -230,7 +234,7 @@ export default function CodeCard(props: CodeCardProps) {
 					{!props.isSavedCollection && (
 						<Button
 							size="xs"
-							color="red"
+							className={classes.removeButton}
 							onClick={() => props.onRemove(props.id)}
 						>
 							Remove
@@ -258,6 +262,7 @@ export default function CodeCard(props: CodeCardProps) {
 							highlightLines={lineNumberObj}
 							className={classes.prism}
 							ref={prismViewport}
+							styles={{ root: { color: "#FFB703" } }}
 						>
 							{code}
 						</Prism>
