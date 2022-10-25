@@ -83,6 +83,7 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: "transparent",
 		color: theme.colors.dark[1],
 		borderTop: "unset",
+		textAlign: "right",
 	},
 }));
 
@@ -321,15 +322,13 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 				}
 				footer={
 					<Footer className={classes.footer} height={50} p="sm">
-						<Center>
-							<Anchor
-								href="https://github.com/adamdevigili"
-								className={classes.titleAnchor}
-								target="_blank"
-							>
-								<Text size="md">created by @adamdevigili</Text>
-							</Anchor>
-						</Center>
+						<Anchor
+							href="https://devigi.li"
+							className={classes.titleAnchor}
+							target="_blank"
+						>
+							<Text size="md">created by @adamdevigili</Text>
+						</Anchor>
 					</Footer>
 				}
 			>
@@ -390,23 +389,35 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 										</Stack>
 									</Title>
 								) : (
-									<Center>
-										<Title className={classes.textPrompt}>
-											Start by adding GitHub links to files
-										</Title>
-										<HoverCard width={280} shadow="md">
-											<HoverCard.Target>
-												<Title>*</Title>
-											</HoverCard.Target>
-											<HoverCard.Dropdown>
-												<Text size="sm">
-													You must be signed in to GitHub to add private
-													repositories. Organization repositories cannot
-													currently be added.
-												</Text>
-											</HoverCard.Dropdown>
-										</HoverCard>
-									</Center>
+									<Stack>
+										<Center>
+											<Title className={classes.textPrompt}>
+												Start by adding GitHub links to files
+											</Title>
+											<HoverCard width={280} shadow="md">
+												<HoverCard.Target>
+													<Title>*</Title>
+												</HoverCard.Target>
+												<HoverCard.Dropdown>
+													<Text size="sm">
+														You must be signed in to GitHub to add private
+														repositories. Organization repositories cannot
+														currently be added.
+													</Text>
+												</HoverCard.Dropdown>
+											</HoverCard>
+										</Center>
+										<Center>
+											<Anchor
+												href="https://codehop.fun/c143f73f-e0cf-4a8a-a152-32089e04601a"
+												className={classes.titleAnchor}
+												target="_blank"
+												style={{ color: "gray" }}
+											>
+												<Text>Want to see an example?</Text>
+											</Anchor>
+										</Center>
+									</Stack>
 								)}
 							</Center>
 						) : (
