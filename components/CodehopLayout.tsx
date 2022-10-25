@@ -79,6 +79,9 @@ const useStyles = createStyles((theme) => ({
 	textPrompt: {
 		// fontFamily: theme.fontFamily,
 	},
+	textPromptAsterisk: {
+		color: theme.colors.dark[4],
+	},
 	mainText: {
 		fontSize: "60px",
 		fontFamily: "Permanent Marker",
@@ -410,7 +413,9 @@ export default function CodehopLayout(props: CodehopLayoutProps) {
 											</Title>
 											<HoverCard width={280} shadow="md">
 												<HoverCard.Target>
-													<Title>*</Title>
+													<Title className={classes.textPromptAsterisk}>
+														*
+													</Title>
 												</HoverCard.Target>
 												<HoverCard.Dropdown>
 													<Text size="sm">
